@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Sorteador de Números</title>
+  <title>Number Randomizer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link
     href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&display=swap"
@@ -12,81 +12,81 @@
 </head>
 <body>
   <div class="app">
-    <aside class="lado-esquerdo">
-      <header class="topo">
-        <img src="/rocketseat/sorteador/assets/logo.png" alt="Logo Numbers" class="logo">
+    <aside class="left-side">
+      <header class="header">
+        <img src="/rocketseat/sorteador/assets/logo.png" alt="Numbers logo" class="logo">
       </header>
 
-      <section class="texto-principal">
-        <p class="tag">Online - gratuito</p>
-        <h1>Sorteador de números</h1>
+      <section class="main-text">
+        <p class="tagline">Online - free</p>
+        <h1>Number randomizer</h1>
       </section>
 
-      <section class="perguntas">
-        <article class="pergunta">
-          <h2>Como funciona o sorteador de números?</h2>
-          <p>O sorteador utiliza um algoritmo de geração aleatória para criar números dentro do intervalo especificado pelo usuário.</p>
+      <section class="faq">
+        <article class="faq-item">
+          <h2>How does the number randomizer work?</h2>
+          <p>The randomizer uses a random generation algorithm to create numbers within the range you specify.</p>
         </article>
 
-        <article class="pergunta">
-          <h2>Posso escolher o intervalo dos números?</h2>
-          <p>Sim, você pode definir os valores mínimo e máximo para o intervalo dos números sorteados.</p>
+        <article class="faq-item">
+          <h2>Can I choose the numbers range?</h2>
+          <p>Yes, you can define the minimum and maximum values for the generated numbers.</p>
         </article>
       </section>
     </aside>
 
-    <main class="lado-direito">
-      <!-- TELA FORMULÁRIO -->
-      <section class="painel" id="tela-formulario">
-        <h2 class="painel-titulo">Quero sortear:</h2>
-        <p class="painel-subtitulo">
-          Defina o intervalo e a quantidade de números, clique em "Sortear" e veja os resultados na tela. É rápido e fácil!
+    <main class="right-side">
+      <!-- FORM SCREEN -->
+      <section class="panel" id="screen-form">
+        <h2 class="panel-title">I want to draw:</h2>
+        <p class="panel-subtitle">
+          Set the range and the amount of numbers, click "Draw" and see the results on the screen. Fast and simple.
         </p>
 
-        <div class="linha-labels">
-          <label for="input-quantidade">Números</label>
-          <label for="input-minimo">De</label>
-          <label for="input-maximo">Até</label>
+        <div class="row-labels">
+          <label for="input-quantity">Numbers</label>
+          <label for="input-min">From</label>
+          <label for="input-max">To</label>
         </div>
 
-        <div class="linha-inputs">
-          <input type="number" id="input-quantidade" min="1" value="2">
-          <input type="number" id="input-minimo" value="1">
-          <input type="number" id="input-maximo" value="100">
+        <div class="row-inputs">
+          <input type="number" id="input-quantity" min="1" value="2">
+          <input type="number" id="input-min" value="1">
+          <input type="number" id="input-max" value="100">
         </div>
 
         <label class="toggle">
-          <input type="checkbox" id="input-sem-repeticao">
-          <span class="toggle-trilho">
-            <span class="toggle-bola"></span>
+          <input type="checkbox" id="input-no-repeat">
+          <span class="toggle-track">
+            <span class="toggle-thumb"></span>
           </span>
-          <span class="toggle-texto">Não repetir número</span>
+          <span class="toggle-text">Do not repeat numbers</span>
         </label>
 
-        <p id="mensagem-erro" class="mensagem-erro" aria-live="assertive"></p>
+        <p id="error-message" class="error-message" aria-live="assertive"></p>
 
-        <button id="btn-sortear" class="botao-principal" type="button">
-          <span>Sortear</span>
-          <span class="icone-seta">→</span>
+        <button id="btn-draw" class="primary-button" type="button">
+          <span>Draw</span>
+          <span class="icon-arrow">→</span>
         </button>
       </section>
 
-      <!-- TELA RESULTADO -->
-      <section class="painel hidden" id="tela-resultado">
-        <h2 class="painel-titulo">Resultado do sorteio</h2>
-        <p class="painel-subtitulo pequeno">1º resultado</p>
+      <!-- RESULT SCREEN -->
+      <section class="panel hidden" id="screen-result">
+        <h2 class="panel-title">Draw result</h2>
+        <p class="panel-subtitle small">1st result</p>
 
-        <div class="resultado-numeros" id="resultado-numeros" aria-live="polite"></div>
+        <div class="result-numbers" id="result-numbers" aria-live="polite"></div>
 
-        <p id="mensagem-status" class="mensagem-status" aria-live="polite"></p>
+        <p id="status-message" class="status-message" aria-live="polite"></p>
 
-        <button id="btn-sortear-novamente" class="botao-principal secundario" type="button">
-          <span>Sortear novamente</span>
-          <span class="icone-reload">⟲</span>
+        <button id="btn-draw-again" class="primary-button secondary" type="button">
+          <span>Draw again</span>
+          <span class="icon-reload">⟲</span>
         </button>
 
-        <button id="btn-voltar" class="botao-voltar" type="button">
-          Voltar para o início
+        <button id="btn-back" class="back-button" type="button">
+          Back to start
         </button>
       </section>
     </main>

@@ -1,203 +1,200 @@
-const btnSortear = document.querySelector("#btn-sortear")
-const btnSortearNovamente = document.querySelector("#btn-sortear-novamente")
-const btnVoltar = document.querySelector("#btn-voltar")
+const btnDraw = document.querySelector("#btn-draw")
+const btnDrawAgain = document.querySelector("#btn-draw-again")
+const btnBack = document.querySelector("#btn-back")
 
-const inpQuantidade = document.querySelector("#input-quantidade")
-const inpMinimo = document.querySelector("#input-minimo")
-const inpMaximo = document.querySelector("#input-maximo")
-const inpSemRepeticao = document.querySelector("#input-sem-repeticao")
+const inputQuantity = document.querySelector("#input-quantity")
+const inputMin = document.querySelector("#input-min")
+const inputMax = document.querySelector("#input-max")
+const inputNoRepeat = document.querySelector("#input-no-repeat")
 
-const mensagemErro = document.querySelector("#mensagem-erro")
-const mensagemStatus = document.querySelector("#mensagem-status")
+const errorMessage = document.querySelector("#error-message")
+const statusMessage = document.querySelector("#status-message")
 
-const telaFormulario = document.querySelector("#tela-formulario")
-const telaResultado = document.querySelector("#tela-resultado")
-const areaResultadoNumeros = document.querySelector("#resultado-numeros")
+const screenForm = document.querySelector("#screen-form")
+const screenResult = document.querySelector("#screen-result")
+const resultNumbersArea = document.querySelector("#result-numbers")
 
-let ultimaConfiguracao = null
+let lastConfig = null
 
-// ---------------------- BOTÃO SORTEAR ----------------------
-btnSortear.addEventListener("click", () => {
-  if (btnSortear.disabled) return
-  btnSortear.disabled = true
+// ---------------------- DRAW BUTTON ----------------------
+btnDraw.addEventListener("click", () => {
+  if (btnDraw.disabled) return
+  btnDraw.disabled = true
 
-  const dados = coletarDados()
+  const data = collectData()
+  const validation = validateDraw(data)
 
-  const resultadoValidacao = validarSorteio(dados)
-  if (!resultadoValidacao.ok) {
-    mensagemErro.textContent = resultadoValidacao.mensagem
-    btnSortear.disabled = false
+  if (!validation.ok) {
+    errorMessage.textContent = validation.message
+    btnDraw.disabled = false
     return
   }
 
-  mensagemErro.textContent = ""
+  errorMessage.textContent = ""
 
-  const numeros = sortearNumeros(dados)
-  ultimaConfiguracao = dados
+  const numbers = drawNumbers(data)
+  lastConfig = data
 
-  telaFormulario.classList.add("hidden")
-  telaResultado.classList.remove("hidden")
+  screenForm.classList.add("hidden")
+  screenResult.classList.remove("hidden")
 
-  mensagemStatus.textContent = "Sorteio realizado com sucesso!"
+  statusMessage.textContent = "Draw completed successfully."
 
-  // na primeira vez, quem importa bloquear é o "Sortear novamente"
-  btnSortearNovamente.disabled = true
-  const duracao = mostrarResultado(numeros)
-  desabilitarBotaoDuranteAnimacao(btnSortearNovamente, duracao)
+  btnDrawAgain.disabled = true
+  const duration = renderResult(numbers)
+  disableButtonDuringAnimation(btnDrawAgain, duration)
 })
 
-// ---------------- BOTÃO SORTEAR NOVAMENTE -----------------
-btnSortearNovamente.addEventListener("click", () => {
-  if (btnSortearNovamente.disabled) return
-  if (!ultimaConfiguracao) return
+// ---------------- DRAW AGAIN BUTTON -----------------
+btnDrawAgain.addEventListener("click", () => {
+  if (btnDrawAgain.disabled) return
+  if (!lastConfig) return
 
-  btnSortearNovamente.disabled = true
+  btnDrawAgain.disabled = true
 
-  const numeros = sortearNumeros(ultimaConfiguracao)
+  const numbers = drawNumbers(lastConfig)
 
-  mensagemStatus.textContent = "Sorteio realizado com sucesso!"
+  statusMessage.textContent = "Draw completed successfully."
 
-  const duracao = mostrarResultado(numeros)
-  desabilitarBotaoDuranteAnimacao(btnSortearNovamente, duracao)
+  const duration = renderResult(numbers)
+  disableButtonDuringAnimation(btnDrawAgain, duration)
 })
 
-// ---------------- BOTÃO VOLTAR PARA O INÍCIO --------------
-btnVoltar.addEventListener("click", () => {
-  telaResultado.classList.add("hidden")
-  telaFormulario.classList.remove("hidden")
+// ---------------- BACK TO START BUTTON --------------
+btnBack.addEventListener("click", () => {
+  screenResult.classList.add("hidden")
+  screenForm.classList.remove("hidden")
 
-  areaResultadoNumeros.innerHTML = ""
-  mensagemErro.textContent = ""
-  mensagemStatus.textContent = ""
-  ultimaConfiguracao = null
+  resultNumbersArea.innerHTML = ""
+  errorMessage.textContent = ""
+  statusMessage.textContent = ""
+  lastConfig = null
 
-  // reseta campos
-  inpQuantidade.value = 2
-  inpMinimo.value = 1
-  inpMaximo.value = 100
-  inpSemRepeticao.checked = false
+  inputQuantity.value = 2
+  inputMin.value = 1
+  inputMax.value = 100
+  inputNoRepeat.checked = false
 
-  // garante que botões estejam habilitados novamente
-  btnSortear.disabled = false
-  btnSortearNovamente.disabled = false
+  btnDraw.disabled = false
+  btnDrawAgain.disabled = false
 
   window.scrollTo({ top: 0, behavior: "smooth" })
 })
 
-// ===================== FUNÇÕES ============================
+// ===================== FUNCTIONS ============================
 
-function coletarDados() {
+function collectData() {
   return {
-    quantidade: Number(inpQuantidade.value),
-    minimo: Number(inpMinimo.value),
-    maximo: Number(inpMaximo.value),
-    semRepeticao: inpSemRepeticao.checked
+    quantity: Number(inputQuantity.value),
+    min: Number(inputMin.value),
+    max: Number(inputMax.value),
+    noRepeat: inputNoRepeat.checked
   }
 }
 
-function validarSorteio(dados) {
+function validateDraw(data) {
   if (
-    inpQuantidade.value.trim() === "" ||
-    inpMinimo.value.trim() === "" ||
-    inpMaximo.value.trim() === ""
+    inputQuantity.value.trim() === "" ||
+    inputMin.value.trim() === "" ||
+    inputMax.value.trim() === ""
   ) {
     return {
       ok: false,
-      mensagem: "Preencha todos os campos antes de sortear."
+      message: "Please fill in all fields before drawing."
     }
   }
 
-  if (isNaN(dados.quantidade) || isNaN(dados.minimo) || isNaN(dados.maximo)) {
+  if (isNaN(data.quantity) || isNaN(data.min) || isNaN(data.max)) {
     return {
       ok: false,
-      mensagem: "Digite valores numéricos válidos."
+      message: "Please enter valid numeric values."
     }
   }
 
-  if (dados.maximo <= dados.minimo) {
+  if (data.max <= data.min) {
     return {
       ok: false,
-      mensagem: "O valor máximo deve ser maior que o valor mínimo."
+      message: "Maximum value must be greater than minimum value."
     }
   }
 
-  if (dados.quantidade <= 0) {
+  if (data.quantity <= 0) {
     return {
       ok: false,
-      mensagem: "A quantidade de números deve ser maior que zero."
+      message: "The quantity of numbers must be greater than zero."
     }
   }
 
-  if (dados.semRepeticao) {
-    const totalPossivel = dados.maximo - dados.minimo + 1
-    if (dados.quantidade > totalPossivel) {
+  if (data.noRepeat) {
+    const totalPossible = data.max - data.min + 1
+    if (data.quantity > totalPossible) {
       return {
         ok: false,
-        mensagem:
-          "A quantidade de números não pode ser maior que o intervalo quando 'não repetir' estiver marcado."
+        message:
+          "Quantity cannot be greater than the available range when 'do not repeat' is enabled."
       }
     }
   }
 
   return {
     ok: true,
-    mensagem: ""
+    message: ""
   }
 }
 
-function sortearNumeros(dados) {
-  const numeros = []
+function drawNumbers(data) {
+  const numbers = []
 
-  if (!dados.semRepeticao) {
-    for (let i = 0; i < dados.quantidade; i++) {
-      const n = numeroAleatorio(dados.minimo, dados.maximo)
-      numeros.push(n)
+  if (!data.noRepeat) {
+    for (let i = 0; i < data.quantity; i++) {
+      const n = randomNumber(data.min, data.max)
+      numbers.push(n)
     }
-    return numeros
+    return numbers
   }
 
-  const disponiveis = []
-  for (let n = dados.minimo; n <= dados.maximo; n++) {
-    disponiveis.push(n)
+  const available = []
+  for (let n = data.min; n <= data.max; n++) {
+    available.push(n)
   }
 
-  for (let i = 0; i < dados.quantidade; i++) {
-    const indice = Math.floor(Math.random() * disponiveis.length)
-    const escolhido = disponiveis.splice(indice, 1)[0]
-    numeros.push(escolhido)
+  for (let i = 0; i < data.quantity; i++) {
+    const index = Math.floor(Math.random() * available.length)
+    const pick = available.splice(index, 1)[0]
+    numbers.push(pick)
   }
 
-  return numeros
+  return numbers
 }
 
-function numeroAleatorio(min, max) {
+function randomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-function mostrarResultado(numeros) {
-  areaResultadoNumeros.innerHTML = ""
+function renderResult(numbers) {
+  resultNumbersArea.innerHTML = ""
 
   let totalMs = 0
-  const delayBase = 150
-  const duracaoAnimacao = 300
+  const baseDelay = 150
+  const animationDuration = 300
 
-  numeros.forEach((numero, index) => {
+  numbers.forEach((number, index) => {
     const span = document.createElement("span")
-    span.textContent = numero
-    span.classList.add("numero-sorteado")
+    span.textContent = number
+    span.classList.add("drawn-number")
 
-    const delay = index * delayBase
+    const delay = index * baseDelay
     span.style.animationDelay = `${delay}ms`
 
-    totalMs = delay + duracaoAnimacao
-    areaResultadoNumeros.appendChild(span)
+    totalMs = delay + animationDuration
+    resultNumbersArea.appendChild(span)
   })
 
   return totalMs + 100
 }
 
-function desabilitarBotaoDuranteAnimacao(botao, duracaoMs) {
+function disableButtonDuringAnimation(button, durationMs) {
   setTimeout(() => {
-    botao.disabled = false
-  }, duracaoMs)
+    button.disabled = false
+  }, durationMs)
 }
