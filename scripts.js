@@ -31,6 +31,7 @@ btnDraw.addEventListener("click", () => {
   }
 
   errorMessage.textContent = ""
+  statusMessage.textContent = "" // esconde mensagem antiga antes de começar a animação
 
   const numbers = drawNumbers(data)
   lastConfig = data
@@ -38,11 +39,19 @@ btnDraw.addEventListener("click", () => {
   screenForm.classList.add("hidden")
   screenResult.classList.remove("hidden")
 
-  statusMessage.textContent = "Draw completed successfully."
-
-  btnDrawAgain.disabled = true
   const duration = renderResult(numbers)
+
+  setTimeout(() => {
+    statusMessage.textContent = "Draw completed successfully."
+  }, duration)
+
+  // durante a animação o usuário não pode clicar em "Draw again"
   disableButtonDuringAnimation(btnDrawAgain, duration)
+
+  // reabilita o Draw original (caso o usuário volte depois)
+  setTimeout(() => {
+    btnDraw.disabled = false
+  }, duration)
 })
 
 // ---------------- DRAW AGAIN BUTTON -----------------
@@ -50,13 +59,17 @@ btnDrawAgain.addEventListener("click", () => {
   if (btnDrawAgain.disabled) return
   if (!lastConfig) return
 
-  btnDrawAgain.disabled = true
+  // some com a mensagem assim que clicar
+  statusMessage.textContent = ""
 
   const numbers = drawNumbers(lastConfig)
 
-  statusMessage.textContent = "Draw completed successfully."
-
   const duration = renderResult(numbers)
+
+  setTimeout(() => {
+    statusMessage.textContent = "Draw completed successfully."
+  }, duration)
+
   disableButtonDuringAnimation(btnDrawAgain, duration)
 })
 
@@ -175,7 +188,7 @@ function renderResult(numbers) {
   resultNumbersArea.innerHTML = ""
 
   let totalMs = 0
-  const baseDelay = 150
+  const baseDelay = 80
   const animationDuration = 300
 
   numbers.forEach((number, index) => {
@@ -194,6 +207,7 @@ function renderResult(numbers) {
 }
 
 function disableButtonDuringAnimation(button, durationMs) {
+  button.disabled = true
   setTimeout(() => {
     button.disabled = false
   }, durationMs)
